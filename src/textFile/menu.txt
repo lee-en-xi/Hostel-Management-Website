@@ -1,0 +1,4 @@
+v000001:::itID01:::Fried Rice:::12.0
+v000001:::itID02:::watan horr:::13.0
+v000001:::itID03:::mee goreng:::9.0
+v000002:::itID01:::food1:::2.0

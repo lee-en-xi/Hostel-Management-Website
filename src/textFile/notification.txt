@@ -1,0 +1,16 @@
+n20231211181642:::send-c000001:::receive-v000001:::Order: Customer (id: c000001) place an order:::CustomerID: c000001<newline>Order Type: Take Away<newline>Location: <newline>Order Detail:<newline>watan horr*1:::2023-12-11 18:16:42:::true
+n20231211181656:::send-c000001:::receive-v000001:::Order: Customer (id: c000001) place an order:::CustomerID: c000001<newline>Order Type: Delivery<newline>Location: Cheras<newline>Order Detail:<newline>mee goreng*1:::2023-12-11 18:16:56:::true
+n20231211182126:::send-v000001:::receive-c000001:::Order Placed:::We're preparing your Food:::2023-12-11 18:21:26:::true
+n20231211182232:::send-v000001:::receive-c000001:::Order Rejected:::Sorry, your order has been rejected..:::2023-12-11 18:22:32:::true
+n20231211182239:::send-v000001:::receive-c000001:::Order Placed:::We're preparing your Food:::2023-12-11 18:22:39:::true
+n20231211182250:::send-v000001:::receive-c000001:::Order is ready:::Your order is ready to serve. Enjoy~:::2023-12-11 18:22:50:::true
+n20231211182626:::send-v000001:::receive-c000001:::Order is ready:::Driver is OTW to deliver your Order...:::2023-12-11 18:26:26:::false
+n20231211182629:::send-v000001:::receive-r000001:::FoodReady:::T0001,Order is ready to pick up:::2023-12-11 18:26:29:::false
+n20231211182802:::send-c000001:::receive-r000001:::Delivery Fee:::T0001 done<newline>Delivery Fee: RM6.0:::2023-12-11 18:28:02:::true
+n20231211182811:::send-r000001:::receive-c000001:::Order Delivered Successfully:::Your order(order20231211181654) has been delivered successful:::2023-12-11 18:28:11:::false
+n20231211183418:::send-c000001:::receive-v000001:::Order: Customer (id: c000001) place an order:::CustomerID: c000001<newline>Order Type: Dine In<newline>Location: <newline>Order Detail:<newline>mee goreng*1:::2023-12-11 18:34:18:::true
+n20231211183643:::send-v000001:::receive-c000001:::Order Placed:::We're preparing your Food:::2023-12-11 18:36:43:::false
+n20231211183648:::send-v000001:::receive-c000001:::Order is ready:::Your order is ready to serve. Enjoy~:::2023-12-11 18:36:48:::false
+n20231211203101:::send-c000001:::receive-v000002:::Order: Customer (id: c000001) place an order:::CustomerID: c000001<newline>Order Type: Dine In<newline>Location: <newline>Order Detail:<newline>food1*1:::2023-12-11 20:31:01:::false
+n20231211203116:::send-v000002:::receive-c000001:::Order Placed:::We're preparing your Food:::2023-12-11 20:31:16:::false
+n20231211203123:::send-v000002:::receive-c000001:::Order is ready:::Your order is ready to serve. Enjoy~:::2023-12-11 20:31:23:::false

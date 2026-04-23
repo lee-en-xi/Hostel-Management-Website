@@ -1,0 +1,4 @@
+a000001:::admin one:::123:::admin1@gmail.com:::0123456789:::2000-01-01:::male:::admin
+v000001:::vendor:::1234:::vendor@gmail.com:::0123456789:::2000-01-01:::female:::vendor
+c000001:::customer:::123:::customer@gmail.com:::0123456789:::2000-01-01:::male:::customer
+r000001:::runner:::abcd1234:::runner@gmail.com:::0123456789:::2000-01-01:::male:::runner

@@ -1,0 +1,446 @@
+package GUIDesignCustomer;
+
+import classFile.Menu;
+import classFile.Order;
+import classFile.Transaction;
+import java.util.Arrays;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.RowFilter;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
+public class CustomerHistory extends javax.swing.JPanel {
+    private String customerID;
+    private List<String> storeList;
+    private DefaultTableModel originalTableModel;
+    private TableRowSorter<DefaultTableModel> sorter;
+    
+    public String getCustomerID() {
+        return customerID;
+    }
+
+    public void setCustomerID(String customerID) {
+        this.customerID = customerID;
+        setStoreList(Menu.getStore());
+        addToTblOrderHistory();
+        addToComboBox();
+    }
+
+    public List<String> getStoreList() {
+        return storeList;
+    }
+
+    public void setStoreList(List<String> storeList) {
+        this.storeList = storeList;
+    }
+
+    public CustomerHistory() {
+        initComponents();
+        originalTableModel = (DefaultTableModel) tblOrderHistory.getModel();
+    }
+    
+    void addToTblOrderHistory() {
+        List<String[]> dataList = Order.readOrderHistory(customerID);
+
+        if(dataList.isEmpty()) {
+            return;
+        }
+
+        String[] columns = dataList.get(0);
+
+        DefaultTableModel model = (DefaultTableModel)tblOrderHistory.getModel();
+        model.setRowCount(0); // Clear existing data
+        model.setColumnCount(0); // Clear existing columns
+
+        // Adding columns
+        for (String column : columns) {
+            model.addColumn(column);
+        }
+
+        // Adding rows
+        for (int i = 1; i < dataList.size(); i++) {
+            String[] row = dataList.get(i);
+            if (row != null && row.length == columns.length) { // Check for row length matching column count
+                model.addRow(row);
+            } else {
+                System.err.println("Row column count mismatch: " + Arrays.toString(row));
+            }
+        }
+        
+        tblOrderHistory.revalidate();
+        tblOrderHistory.repaint();
+    }
+    
+    private void addToTblTransactionHistory() {
+        List<String[]> dataList = Transaction.readTransaction(customerID);
+
+        if(dataList.isEmpty()) {
+            return;
+        }
+
+        String[] columns = {"TransactionID", "Profiter", "Amount", "Description", "Time"};
+
+        DefaultTableModel model = (DefaultTableModel)tblTransactionHistory.getModel();
+        model.setRowCount(0); // Clear existing data
+        model.setColumnCount(0); // Clear existing columns
+
+        // Adding columns
+        for (String column : columns) {
+            model.addColumn(column);
+        }
+
+        // Adding rows
+        for (int i = 1; i < dataList.size(); i++) {
+            String[] row = dataList.get(i);
+            if (row != null) { // Check for row length matching column count
+                row[2] = row[2].replace("receive-", "");
+                if(!row[2].equals(customerID)){
+                    row[3] = "-" + row[3];
+                }
+                String[] data = {row[0], row[2], row[3], row[5], row[4]};
+                model.addRow(data);
+            } else {
+                System.err.println("Row column count mismatch: " + Arrays.toString(row));
+            }
+        }
+        
+        tblTransactionHistory.revalidate();
+        tblTransactionHistory.repaint();
+    }
+    
+    private boolean isRowEmpty(String[] row) {
+        for (String cell : row) {
+            if (cell != null && !cell.trim().isEmpty()) {
+                return false; // If any cell is non-empty, the row is not empty
+            }
+        }
+        return true; // If all cells are empty, the row is empty
+    }
+    
+    private void addToComboBox() {
+        for(String store : storeList) {
+            String[] data = store.split(":::");
+            cbStore.addItem(data[1]);
+        }
+    }
+    
+    private String findStoreID(String storeName) {
+        for (String store : storeList) {
+            String[] parts = store.split(":::");
+            if (parts.length > 1 && parts[1].equals(storeName)) {
+                return parts[0]; // Assuming the store ID is the first part
+            }
+        }
+        return null;
+    }
+    
+    private void applyFilter(String storeID) {
+        sorter = new TableRowSorter<>((DefaultTableModel) tblOrderHistory.getModel());
+        tblOrderHistory.setRowSorter(sorter);
+        RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("^" + storeID + "$", 1); // 1 is the column index for store ID
+        sorter.setRowFilter(rf);
+    }
+
+    private void resetTable() {
+        sorter = new TableRowSorter<>(originalTableModel);
+        tblOrderHistory.setRowSorter(sorter);
+    }
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        pnlOrderHistory = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jPanel2 = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblOrderHistory = new javax.swing.JTable();
+        jLabel3 = new javax.swing.JLabel();
+        btnWriteReview = new javax.swing.JButton();
+        btnReorder = new javax.swing.JButton();
+        cbStore = new javax.swing.JComboBox<>();
+        btnFilter = new javax.swing.JButton();
+        btnTransactionHistory = new javax.swing.JButton();
+        pnlTransactionHistory = new javax.swing.JPanel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblTransactionHistory = new javax.swing.JTable();
+        btnOrderHistory = new javax.swing.JButton();
+
+        setLayout(new java.awt.CardLayout());
+
+        pnlOrderHistory.setBackground(new java.awt.Color(245, 199, 125));
+
+        jLabel1.setFont(new java.awt.Font("French Script MT", 1, 48)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(153, 51, 0));
+        jLabel1.setText("Order History");
+
+        jPanel2.setBackground(new java.awt.Color(255, 157, 0));
+
+        tblOrderHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(tblOrderHistory);
+
+        jLabel3.setFont(new java.awt.Font("STSong", 1, 24)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(153, 51, 0));
+        jLabel3.setText("Filter By Store:");
+
+        btnWriteReview.setBackground(new java.awt.Color(252, 231, 196));
+        btnWriteReview.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnWriteReview.setForeground(new java.awt.Color(153, 51, 0));
+        btnWriteReview.setText("Write Review");
+        btnWriteReview.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnWriteReviewActionPerformed(evt);
+            }
+        });
+
+        btnReorder.setBackground(new java.awt.Color(252, 231, 196));
+        btnReorder.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnReorder.setForeground(new java.awt.Color(153, 51, 0));
+        btnReorder.setText("Reorder");
+        btnReorder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnReorderActionPerformed(evt);
+            }
+        });
+
+        cbStore.setFont(new java.awt.Font("Trebuchet MS", 0, 18)); // NOI18N
+
+        btnFilter.setBackground(new java.awt.Color(252, 231, 196));
+        btnFilter.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnFilter.setForeground(new java.awt.Color(153, 51, 0));
+        btnFilter.setText("Filter");
+        btnFilter.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnFilterActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(18, 18, 18)
+                        .addComponent(cbStore, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(11, 11, 11)
+                        .addComponent(btnFilter)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnWriteReview)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnReorder))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 709, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(15, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(27, 27, 27)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(btnReorder, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnWriteReview, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(cbStore, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnFilter, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(34, Short.MAX_VALUE))
+        );
+
+        btnTransactionHistory.setBackground(new java.awt.Color(252, 231, 196));
+        btnTransactionHistory.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnTransactionHistory.setForeground(new java.awt.Color(153, 51, 0));
+        btnTransactionHistory.setText("Transaction History");
+        btnTransactionHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTransactionHistoryActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlOrderHistoryLayout = new javax.swing.GroupLayout(pnlOrderHistory);
+        pnlOrderHistory.setLayout(pnlOrderHistoryLayout);
+        pnlOrderHistoryLayout.setHorizontalGroup(
+            pnlOrderHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnlOrderHistoryLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnTransactionHistory)
+                .addGap(18, 18, 18))
+        );
+        pnlOrderHistoryLayout.setVerticalGroup(
+            pnlOrderHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOrderHistoryLayout.createSequentialGroup()
+                .addGroup(pnlOrderHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlOrderHistoryLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlOrderHistoryLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnTransactionHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        add(pnlOrderHistory, "card2");
+
+        pnlTransactionHistory.setBackground(new java.awt.Color(245, 199, 125));
+
+        jLabel4.setFont(new java.awt.Font("French Script MT", 1, 48)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(153, 51, 0));
+        jLabel4.setText("TransactionHistory");
+
+        jPanel3.setBackground(new java.awt.Color(255, 157, 0));
+
+        tblTransactionHistory.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane2.setViewportView(tblTransactionHistory);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 708, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(19, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(55, 55, 55)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 430, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(31, Short.MAX_VALUE))
+        );
+
+        btnOrderHistory.setBackground(new java.awt.Color(252, 231, 196));
+        btnOrderHistory.setFont(new java.awt.Font("Century Gothic", 1, 18)); // NOI18N
+        btnOrderHistory.setForeground(new java.awt.Color(153, 51, 0));
+        btnOrderHistory.setText("Order History");
+        btnOrderHistory.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOrderHistoryActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout pnlTransactionHistoryLayout = new javax.swing.GroupLayout(pnlTransactionHistory);
+        pnlTransactionHistory.setLayout(pnlTransactionHistoryLayout);
+        pnlTransactionHistoryLayout.setHorizontalGroup(
+            pnlTransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(pnlTransactionHistoryLayout.createSequentialGroup()
+                .addGap(21, 21, 21)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnOrderHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18))
+        );
+        pnlTransactionHistoryLayout.setVerticalGroup(
+            pnlTransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTransactionHistoryLayout.createSequentialGroup()
+                .addGroup(pnlTransactionHistoryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(pnlTransactionHistoryLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlTransactionHistoryLayout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnOrderHistory, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        add(pnlTransactionHistory, "card2");
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void btnTransactionHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTransactionHistoryActionPerformed
+        pnlTransactionHistory.setVisible(true);
+        pnlOrderHistory.setVisible(false);
+        addToTblTransactionHistory();
+    }//GEN-LAST:event_btnTransactionHistoryActionPerformed
+
+    private void btnOrderHistoryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistoryActionPerformed
+        pnlTransactionHistory.setVisible(false);
+        pnlOrderHistory.setVisible(true);
+    }//GEN-LAST:event_btnOrderHistoryActionPerformed
+
+    private void btnWriteReviewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnWriteReviewActionPerformed
+        int selectedRow = tblOrderHistory.getSelectedRow();
+        if (selectedRow != -1) {
+            String storeId = (String)tblOrderHistory.getValueAt(selectedRow, 1);
+            String orderDetail = (String)tblOrderHistory.getValueAt(selectedRow, 3);
+            new CustomerWriteReview(customerID, storeId, orderDetail).setVisible(true);
+        }
+    }//GEN-LAST:event_btnWriteReviewActionPerformed
+
+    private void btnReorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnReorderActionPerformed
+        int selectedRow = tblOrderHistory.getSelectedRow();
+        if (selectedRow != -1) {
+            String selectedOrderId = (String)tblOrderHistory.getValueAt(selectedRow, 0);
+            Order.reorder(selectedOrderId);
+        }
+    }//GEN-LAST:event_btnReorderActionPerformed
+
+    private void btnFilterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFilterActionPerformed
+        if (btnFilter.getText().equals("Filter")) {
+            String storeName = cbStore.getSelectedItem().toString();
+            String storeID = findStoreID(storeName);
+
+            if (storeID != null) {
+                applyFilter(storeID);
+                btnFilter.setText("Return");
+            } else {
+                JOptionPane.showMessageDialog(this, "Store ID not found for the selected store.", "Filter Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            resetTable();
+            btnFilter.setText("Filter");
+        }
+    }//GEN-LAST:event_btnFilterActionPerformed
+
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnFilter;
+    private javax.swing.JButton btnOrderHistory;
+    private javax.swing.JButton btnReorder;
+    private javax.swing.JButton btnTransactionHistory;
+    private javax.swing.JButton btnWriteReview;
+    private javax.swing.JComboBox<String> cbStore;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JPanel pnlOrderHistory;
+    private javax.swing.JPanel pnlTransactionHistory;
+    private javax.swing.JTable tblOrderHistory;
+    private javax.swing.JTable tblTransactionHistory;
+    // End of variables declaration//GEN-END:variables
+
+}
